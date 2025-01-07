@@ -1,19 +1,19 @@
 export const appUrls = {
     //AUTH ENDPOINTS
-    LOGIN_URL: "/api/auth/signin",
-    FORGETPASSWORD_URL: "/api/forgotpassword",
-    RESET_PASSWORD_URL: "/api/resetpassword",
+    LOGIN_URL: "/auth/signin",
+    FORGETPASSWORD_URL: "/auth/forgot-password",
+    RESET_PASSWORD_URL: "/auth/reset-password",
 
-    //BLOG CRUD ENDPOINT
-    CREATE_POST_URL: "/api/post",
-    UPDATE_POST_URL: "/api/post/update",
-    DELETE_POST_URL: "/api/post/delete",
+    //PROPERTY CRUD ENDPOINT
+    PROPERTY_URL: "/property",
+    CREATE_PROPERTY_URL: "/property",
+    UPDATE_PROPERTY_URL: "/property/update",
+    UPDATE_PROPERTY_IMAGE_URL: "/property/update/image",
+    DELETE_PROPERTY_URL: "/property",
 
-    //IMAGE ENDPOINT
-    GALLERY_URL: "/api/gallery",
 
-    //CREATE SPEECH ENDPOINT
-    CREATE_SPEECH_URL: "/api/speech/create/body",
-    GET_SPEECH_URL: "/api/speech"
+    //CONTACT ENDPOINT
+    FETCH_CONTACT_URL: "/leads"
+
    
 };

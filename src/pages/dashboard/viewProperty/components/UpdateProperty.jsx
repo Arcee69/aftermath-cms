@@ -1,19 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { Formik, Form } from "formik";
 import * as Yup from 'yup';
+import { useLocation } from 'react-router-dom';
+
+import uploadLogo from "../../../../assets/Icons/uploadLogo.svg"
+
+import { api } from '../../../../services/api';
+import { appUrls } from '../../../../services/urls';
 import { toast } from 'react-toastify';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
 
-import uploadLogo from "../../../assets/Icons/uploadLogo.svg"
+const UpdateProperty = () => {
+    const [loading, setLoading] = useState(false)
 
-import { api } from '../../../services/api';
-import { appUrls } from '../../../services/urls';
-import { CustomToolbar } from './CustomToolbar';
-
-
-const CreateBlog = () => {
+    const { state } = useLocation()
+    // console.log(state, "opor")
+    const token = localStorage.getItem("token")
 
     const formValidationSchema = Yup.object().shape({
         title: Yup.string().required("Blog Title is Required"),
@@ -22,14 +25,17 @@ const CreateBlog = () => {
     });
 
     const submitForm = async (values, actions) => {
-        const formData = new FormData()
-        formData.append("title", values?.title);
-        formData.append("body", values?.description);
-        formData.append("image", values?.imageDoc);
+        console.log(values, "ododo")
+        const data = {
+            "post_id":  `${state?.id}`,
+            "title": values?.title,
+            "body": values?.description
+        }
 
-        await api.post(appUrls?.CREATE_POST_URL, formData)
-        .then((res)=> {
-            toast("Blog created Successfully", {
+        await api.post(appUrls?.UPDATE_POST_URL, data)
+        .then((res) => {
+            // console.log(res, "try")
+            toast("News Updated Successfully", {
                 position: "top-right",
                 autoClose: 5000,
                 closeOnClick: true,
@@ -37,19 +43,52 @@ const CreateBlog = () => {
             actions.resetForm()
         })
         .catch((err) => {
-            console.log(err, "soso")
+            // console.log(err, "soso")
             toast(`${err?.data?.message}`, {
                 position: "top-right",
                 autoClose: 5000,
                 closeOnClick: true,
             })
         })
+    }
 
+    const updateImage = async (values, actions) => {
+        const formData = new FormData()
+
+        formData.append("post_id", state?.id);
+        formData.append("image", values?.imageDoc);
+
+        await  axios.post(`https://api.admin.noa.gov.ng/api/post/update-image`, formData, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        .then((res) => {
+            console.log(res, "pop");
+            setLoading(false)
+            toast(`${res?.data?.message}`, { 
+                position: "top-right",
+                autoClose: 3500,
+                closeOnClick: true,
+            });
+            actions.resetForm()
+        }) 
+        .catch((err) => {
+            console.log(err, "pop");
+            setLoading(false)
+            toast(`${err?.data?.message}`, { 
+                position: "top-right",
+                autoClose: 3500,
+                closeOnClick: true,
+            });
+        })
     }
 
   return (
     <div className='md:p-8 flex flex-col gap-4'>
-        <p className='text-black text-xl font-semibold'>Create News</p>
+       
+        <p className='text-black text-xl font-semibold'>Update Blog</p>
 
         <div className="flex items-center ">
             <motion.div
@@ -63,16 +102,19 @@ const CreateBlog = () => {
                     <div className="h-auto">
                         <Formik
                         initialValues={{
-                            title: "",
-                            post: "",
+                            title: state?.title || "",
+                            description: state?.body || "",
                             imageDoc: "",
                         }}
                         validationSchema={formValidationSchema}
-                        enableReinitialize={true}
+                        // enableReinitialize={true}
                         onSubmit={(values, actions) => {
                             // window.scrollTo(0, 0)
                             console.log(values, "often")
                             submitForm(values, actions)
+                            if(values?.imageDoc) {
+                                updateImage(values, actions)
+                            }
                         }}
                         >
                         {({
@@ -136,22 +178,10 @@ const CreateBlog = () => {
                                         : null
                                         }
                                 </div> 
-
-
                                 
                                 <div className='flex flex-col '>
-                                    <label htmlFor='title' className="text-base text-left font-semibold text-[#000000]">Body</label>
-                                    <CustomToolbar />
-                                    <ReactQuill 
-                                        theme="snow" 
-                                        value={values.description} 
-                                        onChange={(e) => setFieldValue("description", e)}
-                                        modules={modules}
-                                        formats={formats}
-                                        style={{ backgroundColor: "#fff", minHeight: "193px", border: '1px solid #ccc', borderRadius: '4px', padding: '10px'}}
-                                        className="lg:w-[507px] h-[193px] mt-1.5 outline-none"     
-                                    />
-                                    {/* <textarea
+                                    <label htmlFor='title' className="text-base text-left font-semibold text-[#000000]">Description</label>
+                                    <textarea
                                         name="description"
                                         placeholder="Blog Description"
                                         type="text"
@@ -160,7 +190,7 @@ const CreateBlog = () => {
                                         value={values.description}
                                         onChange={handleChange}
                                     >
-                                    </textarea> */}
+                                    </textarea>
                                     {errors.description && touched.description ? 
                                         <div className='text-RED-_100'>{errors.description}</div> 
                                         : null
@@ -197,15 +227,4 @@ const CreateBlog = () => {
   )
 }
 
-const modules = {
-    toolbar: {
-      container: "#toolbar",
-    }
-  };
-  
-  const formats = [
-    'header', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
-    'link', 'image', 'video'
-  ];
-
-export default CreateBlog
+export default UpdateProperty

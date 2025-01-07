@@ -3,39 +3,36 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import LongMenu from '../../../components/actionMenuIcon';
 import ModalPop from '../../../components/modal/modalPop';
-import DeleteBlog from './components/DeleteBlog';
-import UpdateBlog from './components/UpdateBlog';
+import DeleteProperty from './components/DeleteProperty';
+import UpdateProperty from './components/UpdateProperty';
 import PaginationControlled from '../../../components/Pagination';
 import { appUrls } from '../../../services/urls';
 import { api } from '../../../services/api';
 import axios from 'axios';
 
 
-const ViewBlog = () => {
-    const [blogs, setBlogs] = useState()
+const ViewProperty = () => {
+    const [properties, setProperties] = useState([])
     const [loading, setLoading] = useState(false)
     const [prevPageUrl, setPrevPageUrl] = useState(null);
     const [nextPageUrl, setNextPageUrl] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [openUpdateBlogPost, setOpenUpdateBlogPost] = useState(false);
-    const [updateBlogPost, setUpdateBlogPost] = useState();
+    const [openUpdateProperty, setOpenUpdateProperty] = useState(false);
+    const [updateProperty, setUpdateProperty] = useState();
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
-    const [data, setData] = useState();
+    const [data, setData] = useState([]);
 
     const navigate = useNavigate()
     
 
-    const fetchBlogPosts = async (url = "https://api.admin.noa.gov.ng/api/post") => {
+    const fetchProperties = async () => {
         setLoading(true)
         try {
-          const res = await axios.get(url);
+          const res = await api.get(appUrls?.PROPERTY_URL);
           console.log(res, "addict")
-          const data = res.data;
     
-          setBlogs(data?.data || []);
-          setPrevPageUrl(data.pagination?.prev_page_url);
-          setNextPageUrl(data.pagination?.next_page_url);
-          setCurrentPage(data.pagination?.current_page);
+          setProperties(res?.data?.data || []);
+   
         } catch (err) {
           console.error(err);
         } finally {
@@ -44,32 +41,32 @@ const ViewBlog = () => {
       };
     
       useEffect(() => {
-        fetchBlogPosts();
+        fetchProperties();
       }, []);
     
       const handlePrevPage = () => {
-        if (prevPageUrl) fetchBlogPosts(prevPageUrl);
+        
       };
     
       const handleNextPage = () => {
-        if (nextPageUrl) fetchBlogPosts(nextPageUrl);
+      
       };
 
   return (
     <div className='md:p-8 flex flex-col gap-4'>
-        <p className='text-black text-xl font-semibold'>News</p>
+        <p className='text-black text-xl font-semibold'>Properties</p>
         {
             loading 
             ?
             <p  className='text-2xl text-[#000] text-center font-semibold'>Loading...</p>
             :
-            <div className={`${blogs?.length > 0 ? "grid grid-cols-3 gap-8" :  "flex items-center justify-center"}`}>
+            <div className={`${properties?.length > 0 ? "grid grid-cols-3 gap-8" :  "flex items-center justify-center"}`}>
                 {
-                    blogs?.length > 0 ? blogs?.map((blog, index) => (
+                    properties?.length > 0 ? properties?.map((property, index) => (
                         <div key={index} className="rounded-tl-xl bg-white p-3 rounded-tr-xl xs:w-full md:max-w-[280px]">
-                            <img loading='lazy' src={blog?.image} alt="" className='rounded-tl-xl rounded-tr-xl xs:w-full  h-[290px] object-cover' />
+                            <img loading='lazy' src={property?.main_image} alt="" className='rounded-tl-xl rounded-tr-xl xs:w-full  h-[290px] object-cover' />
                             <div className='flex flex-col'>
-                                <p className='font-bold text-lg'>{blog?.title}</p>
+                                <p className='font-bold text-lg'>{property?.name}</p>
                                 <div className='flex items-end justify-end'>
                                     <LongMenu
                                         // action={(action) => handleMenuClick(action, blog)} 
@@ -77,15 +74,15 @@ const ViewBlog = () => {
                                         <div className='flex flex-col gap-3 p-3'>
                                             <p 
                                             className='cursor-pointer hover:bg-[#F8F8F8] p-1' 
-                                            onClick={() => {setOpenDeleteModal(true), setData(blog)}}
+                                            onClick={() => {setOpenDeleteModal(true), setData(property)}}
                                             >
                                                 Delete
                                             </p>
                                             <Link 
-                                                to="/update-news"
-                                                state={blog}
+                                                to="/update-property"
+                                                state={property}
                                                 className='cursor-pointer hover:bg-[#F8F8F8] p-1'
-                                                // onClick={() => {navigate("/update-blog"), setUpdateBlogPost(blog)}}
+                                                // onClick={() => {navigate("/update-blog"), setUpdateProperty(blog)}}
                                             >
                                                 Edit
                                             </Link>
@@ -96,7 +93,7 @@ const ViewBlog = () => {
                         </div>
                     ))
                     :
-                    <p className='text-2xl text-[#000] text-center font-semibold'>No News Available</p>
+                    <p className='text-2xl text-[#000] text-center font-semibold'>No Properties Available</p>
                 }
 
             </div>
@@ -126,19 +123,19 @@ const ViewBlog = () => {
        
 
         <ModalPop isOpen={openDeleteModal}>
-            <DeleteBlog 
+            <DeleteProperty 
                 handleClose={() => setOpenDeleteModal(false)} 
                 data={data}
             />
         </ModalPop>
-        <ModalPop isOpen={openUpdateBlogPost}>
-            <UpdateBlog 
-                handleClose={() => setOpenUpdateBlogPost(false)} 
-                data={updateBlogPost}
+        <ModalPop isOpen={openUpdateProperty}>
+            <UpdateProperty 
+                handleClose={() => setOpenUpdateProperty(false)} 
+                data={data}
             />
         </ModalPop>
     </div>
   )
 }
 
-export default ViewBlog
+export default ViewProperty

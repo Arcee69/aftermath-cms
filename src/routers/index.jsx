@@ -7,11 +7,12 @@ import Login from '../pages/auth/login';
 import ForgotPassword from '../pages/auth/forgotPassword';
 
 import BoardLayout from '../layouts/boardLayout';
-import CreateBlog from '../pages/dashboard/createBlog';
-import ViewBlog from '../pages/dashboard/viewBlog';
-import UpdateBlog from '../pages/dashboard/viewBlog/components/UpdateBlog';
+import CreateProperty from '../pages/dashboard/createProperty';
+import ViewProperty from '../pages/dashboard/viewProperty';
+import UpdateProperty from '../pages/dashboard/viewProperty/components/UpdateProperty';
 import PasswordReset from '../pages/auth/forgotPassword/PasswordReset';
 import Gallery from '../pages/dashboard/gallery';
+import Contacts from '../pages/contacts';
 
 
 //<ProtectRoutes /> 
@@ -24,10 +25,10 @@ export default function Routers () {
         <Routes>
 
             <Route element={<BoardLayout /> }>
-              <Route path="/create-news" element={<CreateBlog />} />
-              <Route path="/view-news" element={<ViewBlog />} />
-              <Route path="/update-news" element={<UpdateBlog />} />
-              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/create-property" element={<CreateProperty />} />
+              <Route path="/view-properties" element={<ViewProperty />} />
+              <Route path="/update-property" element={<UpdateProperty />} />
+              <Route path="/contacts" element={<Contacts />} />
             </Route>
 
             {/* <Route element={<AuthProtectRoutes />}> */}

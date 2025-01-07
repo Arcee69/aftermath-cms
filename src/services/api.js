@@ -20,7 +20,7 @@ const apiResource = () => {
             const token = TokenService.getToken() || undefined;
             if (!token) return config;
             config.headers["Authorization"] = `Bearer ${token}`;
-            if (config?.url === appUrls?.CREATE_POST_URL) {
+            if (config?.url === appUrls?.CREATE_PROPERTY_URL) {
                 config.headers["Content-Type"] = "multipart/form-data";
             } else {
                 config.headers["Content-Type"] = 'application/json';

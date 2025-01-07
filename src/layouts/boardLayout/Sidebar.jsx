@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 // import logo from "../../assets/icons/educontest-logo.svg";
-import logo from "../../assets/icons/noa_logo.svg";
+import logo from "../../assets/icons/Logo_plain.svg";
 import { Navigation } from "react-minimal-side-navigation";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import dashboardIcon from "../../assets/icons/dashboard.svg";
@@ -20,34 +20,27 @@ export default function Sidebar() {
 
   const menuItems = [
       {
-          title: "View News",
+          title: "View Properties",
           children: false,
-          itemId: '/view-news',
+          itemId: '/view-properties',
           icon: () => (
             <img src={dashboardIcon} alt="icon" />
           ),
       
       },
       {
-          title: "Create News",
+          title: "Create Property",
           children: false,
-          itemId: '/create-news',
+          itemId: '/create-property',
           icon: () => (
             <img src={dashboardIcon} alt="icon" />
           ),
       },
+  
       {
-          title: "View Gallery",
-          children: false,
-          itemId: '/gallery',
-          icon: () => (
-            <img src={dashboardIcon} alt="icon" />
-          ),
-      },
-      {
-        title: "Speeches",
+        title: "Contacts",
         children: false,
-        itemId: '/speeches',
+        itemId: '/contacts',
         icon: () => (
           <img src={dashboardIcon} alt="icon" />
         ),
