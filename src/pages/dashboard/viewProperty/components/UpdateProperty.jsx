@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { Formik, Form } from "formik";
+import { CgSpinner } from "react-icons/cg"
 import * as Yup from 'yup';
 import { useLocation } from 'react-router-dom';
 
@@ -13,33 +14,37 @@ import axios from 'axios';
 
 const UpdateProperty = () => {
     const [loading, setLoading] = useState(false)
+ 
 
     const { state } = useLocation()
-    // console.log(state, "opor")
+    console.log(state, "opor")
     const token = localStorage.getItem("token")
 
     const formValidationSchema = Yup.object().shape({
-        title: Yup.string().required("Blog Title is Required"),
-        imageDoc: Yup.mixed().required('Blog Image is required'),
-        description: Yup.mixed().required("Contest Description is Required")
+        name: Yup.string(),
+        address: Yup.string(),
+        type: Yup.string(),
+        imageDoc: Yup.mixed(),
     });
 
     const submitForm = async (values, actions) => {
+        setLoading(true)
         console.log(values, "ododo")
         const data = {
-            "post_id":  `${state?.id}`,
-            "title": values?.title,
-            "body": values?.description
+            "property_id":  `${state?.id}`,
+            "name": values?.name,
+            "address": values?.address
         }
 
-        await api.post(appUrls?.UPDATE_POST_URL, data)
+        await api.post(appUrls?.UPDATE_PROPERTY_URL, data)
         .then((res) => {
             // console.log(res, "try")
-            toast("News Updated Successfully", {
+            toast("Property Updated Successfully", {
                 position: "top-right",
                 autoClose: 5000,
                 closeOnClick: true,
             })
+            setLoading(false)
             actions.resetForm()
         })
         .catch((err) => {
@@ -49,16 +54,19 @@ const UpdateProperty = () => {
                 autoClose: 5000,
                 closeOnClick: true,
             })
+            setLoading(false)
         })
     }
 
     const updateImage = async (values, actions) => {
         const formData = new FormData()
 
-        formData.append("post_id", state?.id);
+        formData.append("property_id", state?.id);
         formData.append("image", values?.imageDoc);
+        formData.append("type", values?.type);
+       
 
-        await  axios.post(`https://api.admin.noa.gov.ng/api/post/update-image`, formData, {
+        await  axios.post(`https://aik.smhptech.com/api/property/update/image`, formData, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "multipart/form-data"
@@ -88,7 +96,7 @@ const UpdateProperty = () => {
   return (
     <div className='md:p-8 flex flex-col gap-4'>
        
-        <p className='text-black text-xl font-semibold'>Update Blog</p>
+        <p className='text-black text-xl font-semibold'>Update Property</p>
 
         <div className="flex items-center ">
             <motion.div
@@ -102,8 +110,9 @@ const UpdateProperty = () => {
                     <div className="h-auto">
                         <Formik
                         initialValues={{
-                            title: state?.title || "",
-                            description: state?.body || "",
+                            name: state?.name || "",
+                            address: state?.address || "",
+                            type: "",
                             imageDoc: "",
                         }}
                         validationSchema={formValidationSchema}
@@ -132,18 +141,51 @@ const UpdateProperty = () => {
                             <div className='flex flex-col gap-6 lg:items-center'>
 
                                 <div className="flex flex-col">
-                                    <label htmlFor='title' className="text-base text-left font-semibold text-[#000000]">Title</label>
+                                    <label htmlFor='name' className="text-base text-left font-semibold text-[#000000]">Property Name</label>
                                     <input
-                                        name="title"
-                                        placeholder="Blog Title"
+                                        name="name"
+                                        placeholder="Property Name"
                                         type="text" 
-                                        value={values.title}
+                                        value={values.name}
                                         onChange={handleChange}
                                         className="rounded outline-none shadow lg:w-[507px] h-[21px] border-solid  p-3 border"
                                     />
-                                    {errors.title && touched.title ? (
-                                    <div className='text-RED-_100'>{errors.title}</div>
+                                    {errors.name && touched.name ? (
+                                    <div className='text-RED-_100'>{errors.name}</div>
                                     ) : null}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label htmlFor='address' className="text-base text-left font-semibold text-[#000000]">Address</label>
+                                    <input
+                                        name="address"
+                                        placeholder="Address"
+                                        type="text" 
+                                        value={values.address}
+                                        onChange={handleChange}
+                                        className="rounded outline-none shadow lg:w-[507px] h-[21px] border-solid  p-3 border"
+                                    />
+                                    {errors.address && touched.address ? (
+                                    <div className='text-RED-_100'>{errors.address}</div>
+                                    ) : null}
+                                </div>
+
+                                <div className='flex flex-col '>
+                                    <p className='text-base text-left font-semibold text-[#000000]'>Type</p>
+                                
+                                    <select 
+                                        name='type'
+                                        value={values.type}
+                                        onChange={handleChange} 
+                                        className='apperance-none rounded outline-none shadow lg:w-[527px] h-[42px] border-solid  p-3 border'
+                                    >
+                                        <option value="">Select</option>
+                                        <option value="main_image">Main Image</option>
+                                        <option value="left_image">Left Image</option>
+                                        <option value="right_image">Right Image</option>
+                                        <option value="extra_image">Extra Image</option>
+                                    </select>
+                                    
                                 </div>
 
                                 <div className="flex flex-col xs:mt-4 lg:mt-0 lg:w-12/12">
@@ -179,23 +221,7 @@ const UpdateProperty = () => {
                                         }
                                 </div> 
                                 
-                                <div className='flex flex-col '>
-                                    <label htmlFor='title' className="text-base text-left font-semibold text-[#000000]">Description</label>
-                                    <textarea
-                                        name="description"
-                                        placeholder="Blog Description"
-                                        type="text"
-                                        rows="5"
-                                        className="lg:w-[507px] rounded  h-[193px]  bg-white border border-solid mt-1.5 p-3 outline-none"                               
-                                        value={values.description}
-                                        onChange={handleChange}
-                                    >
-                                    </textarea>
-                                    {errors.description && touched.description ? 
-                                        <div className='text-RED-_100'>{errors.description}</div> 
-                                        : null
-                                    }
-                                </div>
+                               
                     
                         
 
@@ -204,11 +230,11 @@ const UpdateProperty = () => {
 
                             <div className='flex xs:mt-4 md:mt-5 lg:mt-5 gap-4 justify-center'>
                                 <button 
-                                type="submit" 
-                                className="w-6/12 bg-primary border-none p-3 text-black text-sm rounded-tl-2xl rounded-tr-md rounded-b-md font-semibold"
-                                style={{ width: "130px" }}
+                                    type="submit" 
+                                    className="w-6/12 bg-primary border-none p-3 text-black flex items-center justify-center text-sm rounded-tl-2xl rounded-tr-md rounded-b-md font-semibold"
+                                    style={{ width: "130px" }}
                                 >
-                                Submit
+                                    <p className='text-[#fff] '>{loading ? <CgSpinner className=" animate-spin text-lg " /> : 'Submit'}</p>
                                 </button>
                             </div>
                             

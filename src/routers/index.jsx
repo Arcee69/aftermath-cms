@@ -11,7 +11,6 @@ import CreateProperty from '../pages/dashboard/createProperty';
 import ViewProperty from '../pages/dashboard/viewProperty';
 import UpdateProperty from '../pages/dashboard/viewProperty/components/UpdateProperty';
 import PasswordReset from '../pages/auth/forgotPassword/PasswordReset';
-import Gallery from '../pages/dashboard/gallery';
 import Contacts from '../pages/contacts';
 
 

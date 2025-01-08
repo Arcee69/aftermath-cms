@@ -19,7 +19,7 @@ export default function BoardLayout() {
           <header className="sticky top-0 border-none h-[76px] z-50 bg-[#fff] xl:px-6 lg:px-4 md:px-2 px-2">
             <Header setOpenMobileSidebar={setOpenMobileSidebar} />
           </header>
-          <main className="h-auto bg-[#F8F8F8] "> {/* p-[2%]  */}
+          <main className="h-auto bg-[#F8F8F8] overflow-x-hidden "> {/* p-[2%]  */}
             <Outlet />
           </main>
         </div>
