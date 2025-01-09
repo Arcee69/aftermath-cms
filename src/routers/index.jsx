@@ -4,7 +4,7 @@ import { Route, Routes} from "react-router-dom";
 import { AuthProtectRoutes, ProtectRoutes } from './protectRoutes';
 
 import Login from '../pages/auth/login';
-import ForgotPassword from '../pages/auth/forgotPassword';
+// import ForgotPassword from '../pages/auth/forgotPassword';
 
 import BoardLayout from '../layouts/boardLayout';
 import CreateProperty from '../pages/dashboard/createProperty';
@@ -33,7 +33,7 @@ export default function Routers () {
             {/* <Route element={<AuthProtectRoutes />}> */}
                 <Route path='/' element={<Login />} />
                 <Route path='/reset-password' element={<PasswordReset />} />
-                <Route path='/forgot-password' element={<ForgotPassword />} />
+                {/* <Route path='/forgot-password' element={<ForgotPassword />} /> */}
             {/* </Route> */}
         </Routes>
     </div>
